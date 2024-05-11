@@ -24,3 +24,5 @@ ubuntu_hermes_install.BACKUP
 *.log
 *.swp
 *.deb
+Dockerfile
+docker-compose.yml

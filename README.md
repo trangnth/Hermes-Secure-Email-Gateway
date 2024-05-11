@@ -82,6 +82,12 @@ The script will prompt you for the following information before it starts instal
 * System Mailname (Example: smtp.domain.tld)
 
 
+Set Variables, then edit `password` in file .env
+
+```sh
+cp .env.example .env
+```
+
 The **Configure /mnt/data partition** directions below assume you have a 250GB secondary drive which you will partition, format and mount as /mnt/data. 
 
 Technically a secondary drive for the /mnt/data directory is not a requirement but it's highly recommended for performance reasons. If you don't wish to use a secondary drive for the /mnt/data directory, simply create a /mnt/data directory in your system and skip to the **Quick script install and run instructions** section. 

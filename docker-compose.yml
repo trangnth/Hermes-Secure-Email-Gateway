@@ -1,0 +1,16 @@
+version: "3"
+services:
+  hermes:
+    image: hermes:v1
+    privileged: true
+    volumes:
+      - .env:/hermes/.env
+    ports:
+      - "8080:80"
+      - "8443:443"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100M"
+        max-file: "5"

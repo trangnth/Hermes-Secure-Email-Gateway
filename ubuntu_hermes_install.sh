@@ -99,6 +99,7 @@ TOMCATUSER="tomcat"
 
 
 #Script Debug Set Variables. Do not enable unless you are troubleshooting
+#Add to file .env
 #MYSQL_ROOT_PASSWORD=password
 #MYSQL_HERMES_USERNAME=hermes
 #MYSQL_HERMES_PASSWORD=password
@@ -111,6 +112,9 @@ TOMCATUSER="tomcat"
 #LUCEE_ADMIN_PASSWORD=password
 #MAIL_NAME=smtp.domain.tld
 
+if [ -f .env ]; then
+    source .env
+fi
 
 echo "Installing Boxes Prerequisite"
 #Install boxes
@@ -138,28 +142,38 @@ else
 echo "${GREEN}Completed Installing Spinner Prerequisite ${RESET}"
 fi
 
+echo "---------^---^----------"
+echo "1) Yes - I Agree"
+echo "2) No - I do not agree"
+
 PS3='Parts of this program are covered by the Hermes Secure Email Gateway Pro EULA which can be found at https://docs.deeztek.com/books/hermes-seg-general-documentation/page/hermes-secure-email-gateway-pro-end-user-license-agreement-eula. You must agree to the terms set forth by the EULA before continuing. Do you agree to the terms set forth by the EULA? (Selecting NO will stop the installation): '
-options=("Yes - I Agree" "No - I do not agree")
-select opt in "${options[@]}"
-do
-    case $opt in
-        "Yes - I Agree")
 
-            echo "${GREEN}Starting Hermes SEG Installation${RESET}" | boxes -d stone -p a2v1
-            echo "During installation a ${RED}$SCRIPTPATH/install_log-$TIMESTAMP.log${RESET} log file will be created. It's highly recommended that you open a separate shell window and tail that file in order to view progress of the installation and/or any errors that may occur. Additionally, ensure that you note all the usernames and passwords you will be prompted to create"
-
-            echo "[`date +%m/%d/%Y-%H:%M`] Starting Hermes SEG Installation." >> $SCRIPTPATH/install_log-$TIMESTAMP.log
-          break
-            ;;
-        "No - I do not agree")
-
-            echo "Exiting Hermes SEG installation ";
-            exit
-            ;;
-
-        *) echo "Invalid option $REPLY ";;
-    esac
-done
+echo $PS3
+echo " --> Default choose 'Yes - I Agree'. If you do not agree, press 'Ctrl + c' to cancel installation."
+echo " --> Sleeping in 10s ........."
+echo ""
+sleep 10
+#options=("Yes - I Agree" "No - I do not agree")
+#select opt in "${options[@]}"
+#do
+#    case $opt in
+#        "Yes - I Agree")
+#
+#            echo "${GREEN}Starting Hermes SEG Installation${RESET}" | boxes -d stone -p a2v1
+#            echo "During installation a ${RED}$SCRIPTPATH/install_log-$TIMESTAMP.log${RESET} log file will be created. It's highly recommended that you open a separate shell window and tail that file in order to view progress of the installation and/or any errors that may occur. Additionally, ensure that you note all the usernames and passwords you will be prompted to create"
+#
+#            echo "[`date +%m/%d/%Y-%H:%M`] Starting Hermes SEG Installation." >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+#          break
+#            ;;
+#        "No - I do not agree")
+#
+#            echo "Exiting Hermes SEG installation ";
+#            exit
+#            ;;
+#
+#        *) echo "Invalid option $REPLY ";;
+#    esac
+#done
 
 #Set Default username for MySQL root
 MYSQL_ROOT_USERNAME=root
@@ -187,13 +201,12 @@ goto "start"
 
 : start
 
-read -p "Enter MySQL(MariaDB) root user password you wish to use (must not contain special characters or spaces): "  MYSQL_ROOT_PASSWORD
-
 if [ -z "$MYSQL_ROOT_PASSWORD" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) root user password cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) root user password you wish to use (must not contain special characters or spaces): "  MYSQL_ROOT_PASSWORD
 
 goto "start"
 
@@ -212,14 +225,13 @@ fi
 
 : step2
 
-read -p "Enter MySQL(MariaDB) Hermes SEG user username you wish to use (Example: hermes): "  MYSQL_HERMES_USERNAME
 
 if [ -z "$MYSQL_HERMES_USERNAME" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) Hermes SEG user username cannot be empty ${RESET}"
-
+      read -p "Enter MySQL(MariaDB) Hermes SEG user username you wish to use (Example: hermes): "  MYSQL_HERMES_USERNAME
 goto "step2"
 
 elif egrep -q "[~\^\@\#\$\%\&\*\-\=\+\'\"\ ]" <<< "$MYSQL_HERMES_USERNAME"
@@ -237,13 +249,13 @@ fi
 
 : step3
 
-read -p "Enter MySQL(MariaDB) Hermes SEG user password you wish to use (must not contain special characters or spaces): "  MYSQL_HERMES_PASSWORD
 
 if [ -z "$MYSQL_HERMES_PASSWORD" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) Hermes SEG user password cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) Hermes SEG user password you wish to use (must not contain special characters or spaces): "  MYSQL_HERMES_PASSWORD
 
 goto "step3"
 
@@ -262,13 +274,13 @@ fi
 
 : step4
 
-read -p "Enter MySQL(MariaDB) Syslog username you wish to use (Example: rsyslog): "  MYSQL_SYSLOG_USERNAME
 
 if [ -z "$MYSQL_SYSLOG_USERNAME" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) Syslog username cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) Syslog username you wish to use (Example: rsyslog): "  MYSQL_SYSLOG_USERNAME
 
 goto "step4"
 
@@ -286,13 +298,13 @@ goto "step5"
 fi
 
 : step5
-read -p "Enter MySQL(MariaDB) Syslog user password you wish to use (must not contain special characters or spaces): "  MYSQL_SYSLOG_PASSWORD
 
 if [ -z "$MYSQL_SYSLOG_PASSWORD" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) Syslog user password cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) Syslog user password you wish to use (must not contain special characters or spaces): "  MYSQL_SYSLOG_PASSWORD
 
 goto "step5"
 
@@ -312,13 +324,13 @@ fi
 
 : step6
 
-read -p "Enter MySQL(MariaDB) Ciphermail username you wish to use (Example: ciphermail): "  MYSQL_CIPHERMAIL_USERNAME
 
 if [ -z "$MYSQL_CIPHERMAIL_USERNAME" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) Ciphermail username cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) Ciphermail username you wish to use (Example: ciphermail): "  MYSQL_CIPHERMAIL_USERNAME
 
 goto "step6"
 
@@ -338,13 +350,13 @@ fi
 
 : step7
 
-read -p "Enter MySQL(MariaDB) Ciphermail user password you wish to use (must not contain special characters or spaces): "  MYSQL_CIPHERMAIL_PASSWORD
 
 if [ -z "$MYSQL_CIPHERMAIL_PASSWORD" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) Ciphermail user password cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) Ciphermail user password you wish to use (must not contain special characters or spaces): "  MYSQL_CIPHERMAIL_PASSWORD
 
 goto "step7"
 
@@ -363,13 +375,13 @@ fi
 
 
 : step8
-read -p "Enter MySQL(MariaDB) Opendmarc username you wish to use (Example: opendmarc): "  MYSQL_OPENDMARC_USERNAME
 
 if [ -z "$MYSQL_OPENDMARC_USERNAME" ]
 
 then
 
       echo "${RED}MySQL(MariaDB) Opendmarc username cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) Opendmarc username you wish to use (Example: opendmarc): "  MYSQL_OPENDMARC_USERNAME
 
 goto "step8"
 
@@ -388,13 +400,13 @@ fi
 
 
 : step9
-read -p "Enter MySQL(MariaDB) Opendmarc user password you wish to use (must not contain special characters or spaces): "  MYSQL_OPENDMARC_PASSWORD
 
 if [ -z "$MYSQL_OPENDMARC_PASSWORD" ]
 
 then
 
       echo "${RED}ySQL(MariaDB) Opendmarc user password cannot be empty ${RESET}"
+      read -p "Enter MySQL(MariaDB) Opendmarc user password you wish to use (must not contain special characters or spaces): "  MYSQL_OPENDMARC_PASSWORD
 
 goto "step9"
 
@@ -414,13 +426,13 @@ fi
 
 : step10
 
-read -p "Enter Lucee Server and Web Administrator password you wish to use (must not contain special characters or spaces): "  LUCEE_ADMIN_PASSWORD
 
 if [ -z "$LUCEE_ADMIN_PASSWORD" ]
 
 then
 
       echo "${RED}Lucee Server and Web Administrator password cannot be empty ${RESET}"
+      read -p "Enter Lucee Server and Web Administrator password you wish to use (must not contain special characters or spaces): "  LUCEE_ADMIN_PASSWORD
 
 goto "step10"
 
@@ -439,19 +451,19 @@ fi
 
 : step11
 
-read -p "Enter System Mailname (Example: smtp.domain.tld): "  MAIL_NAME
 
 if [ -z "$MAIL_NAME" ]
 
 then
 
       echo "${RED}System Mailname cannot be empty ${RESET}"
+      read -p "Enter System Mailname (Example: smtp.domain.tld): "  MAIL_NAME
 
 goto "step11"
 
-
 fi
 
+echo "MAIL_NAME: $MAIL_NAME" 
 
 source "$(pwd)/spinner.sh"
 
